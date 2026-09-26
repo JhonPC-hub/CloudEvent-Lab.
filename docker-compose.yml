@@ -1,0 +1,39 @@
+services:
+  api:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npm run dev -w apps/api"
+    ports:
+      - "4000:4000"
+    environment:
+      - RUST_ENGINE_URL=http://event-engine:4100
+    depends_on:
+      - event-engine
+
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npm run dev -w apps/web -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+  event-engine:
+    image: rust:1.82-bookworm
+    working_dir: /app
+    volumes:
+      - ./services/event-engine:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    command: cargo run
+    ports:
+      - "4100:4100"
+
+volumes:
+  cargo-cache:
+  target-cache:

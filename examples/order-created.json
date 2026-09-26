@@ -1,0 +1,10 @@
+{
+  "type": "ORDER_CREATED",
+  "source": "checkout-service",
+  "payload": {
+    "orderId": "ORD-1001",
+    "customerId": "CUS-44",
+    "amount": 149.99,
+    "currency": "USD"
+  }
+}
